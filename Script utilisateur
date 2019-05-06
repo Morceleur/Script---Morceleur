@@ -1,0 +1,106 @@
+
+# Permet d'effacer les enregistrement des varriables afin de ne pas avoir de résidu d'ancienne création d'utilisateur
+
+Clear-Variable -name "prenom"
+Clear-Variable -name "nom"
+Clear-Variable -name "login"
+Clear-Variable -name "groupe"
+Clear-Variable -name "poste"
+Clear-Variable -name "mail"
+Clear-Variable -name "telephone"
+
+# Permet de créer le premier menu permettant de choisir quels options choisir pour le création de l'utilisateur, en numérotant chaque option pour plus de lisibilité
+
+function MenuPrincipale
+{
+    param (
+            [string]$Title = "Menu de création d'utilisateur" 
+    )
+    Clear-Host
+    Write-host " - - - - - - - - $Title - - - - - - - -"
+
+    write-host ""
+    write-host ""
+    write-host "Bienvenue dans l'assistant de création d'utilisateur"
+    write-host ""
+    write-host "Veuillez remplir le formulaire"
+    write-host ""
+    write-host "1 - Nom de l'utilsateur : $prenom"
+    write-host "2 - Prénom de l'utilisateur : $nom"
+    write-host "3 - Login de l'utilisateur : $login"
+    write-host "4 - Groupe de l'utilisateur : $groupe"
+    write-host "5 - Poste de l'utilisateur : $poste"
+    write-host ""
+    write-host "6 - Adresse mail de l'utilisateur : $mail"
+    write-host "7 - Numéro de Téléphone de l'utilisateur : $telephone"
+    write-host "8 - Création de l'utilsiateur"
+    write-host ""
+    write-host "9 - Quitter le script"
+    write-host ""
+    write-host ""
+    write-host " - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+    write-host ""
+    write-host ""
+}
+
+# Permet de créer un sous menu du menu principale, permettant de choisir directement le groupe de l'utilisateur, sans avoir a taper le nom exacte du groupe
+
+function SousMenu
+{
+    param (
+            [string]$Title = "Menu de choix de groupe" 
+    )
+    Clear-Host
+    Write-host " - - - - - - - - $Title - - - - - - - -"
+
+    write-host ""
+    write-host ""
+    write-host "Veuillez choisir le groupe voulut"
+    write-host ""
+    write-host "1 - Direction Générale"
+    write-host "2 - Direction Financière"
+    write-host "3 - Direction Marketing"
+    write-host "4 - Direction Technique"
+    write-host "5 - Direction des ressources humaines"
+    write-host ""
+    write-host ""
+    write-host " - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+    write-host ""
+    write-host ""
+}
+
+# La boucle DO permet d'initialiser l'affichage du menu, ainsi que ces diverses options, permettant le retour au menu après chaque choix fait par l'utilisateur, tant que celui ci n'a pas choisit
+# d'utilisater l'option pour quitter le script.
+
+Do
+{
+    MenuPrincipale
+
+    $choix = Read-Host -Prompt "Choisissez une option"; write-host ""; write-host ""
+    switch ($choix)
+    {
+        1 {$prenom= Read-Host -Prompt " Entrez le nom de l'utilisateur"; write-host "";write-host "";write-host " - - - - - - - - - - - - - - - - - - - - - - - - - - - ";write-host "";write-host ""  }
+        2 {$nom= Read-Host -Prompt " Entrez le prénom de l'utilisateur"; write-host "";write-host "";write-host " - - - - - - - - - - - - - - - - - - - - - - - - - - - ";write-host "";write-host ""  }
+        3 {$login= Read-Host -Prompt " Entrez le login de l'utilisateur"; write-host "";write-host "";write-host " - - - - - - - - - - - - - - - - - - - - - - - - - - - ";write-host "";write-host ""  }
+        4 {$groupe= 
+            SousMenu
+            $groupe = Read-host -Prompt "Choisissez une option"; write-host ""; write-host""
+            switch ($groupe)
+            {
+                1 {$groupe= "Direction Générale"}
+                2 {$groupe= "Direction Financière"}
+                3 {$groupe= "Direction Marketing"}
+                4 {$groupe= "Direction Techniques"}
+                5 {$groupe= "Direction Ressources Humaines"}
+            }
+        }
+        5 {$poste= Read-Host -Prompt "Entrez le poste occupé par l'utilisateur"}
+        6 {$mail= Read-Host -Prompt " Entrez l'adresse mail de l'utilisateur"}
+        7 {$telephone = Read-Host -Prompt " Entrez le numéro de téléphone de l'utilisateur"}
+        8 {$finalisation= write-host "Utilisateur finaliser, création en cours"; new-aduser -Name "$prenom $nom" -GivenName "$nom" -Surname "$prenom" -SamAccountName "$login" -description "$poste" -EmailAddres "$mail" -OfficePhone "$telephone" -path "OU=$groupe,OU= acme group, DC=acme, DC=local"}
+        9 {$fin= Write-host ""; write-host " - - - - - - - - - - - - - - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"; write-host ""; write-host""; write-host " Vous avez décider de fermer le script";write-host ""; write-host""; sleep 2; Write-Host " Fermeture du script dans 5 secondes "; sleep -s 5; exit}
+
+    }
+    pause
+}
+until ($choix -eq 'q')
